@@ -1,7 +1,12 @@
 from microsoftbotframework import ReplyToActivity
+from actions import reply_dont_understand
 
 
-def echo_response(message):
+def determine_action(message_text):
+    return reply_dont_understand
+
+
+def handle_message(message):
     if message["type"] == "message":
-        ReplyToActivity(fill=message,
-                        text=message["text"]).send()
+        action = determine_action(message["text"])
+        action(message)
