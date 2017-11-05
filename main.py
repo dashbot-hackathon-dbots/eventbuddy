@@ -1,8 +1,8 @@
 from microsoftbotframework import MsBot
-from tasks import handle_message
+from tasks import MessageHandler
 
 bot = MsBot()
-bot.add_process(handle_message)
+bot.add_process(MessageHandler.handle_message)
 
 if __name__ == '__main__':
     bot.run()
