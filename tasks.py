@@ -6,6 +6,7 @@ from actions import reply_ticket_purchase
 from context import Contexts
 import urllib3
 import certifi
+from fuzzywuzzy import fuzz
 
 DASHBOT_API_KEY = "CLyJ1E8NKNzFbFZ45PUwXmLAGkZCZiajlsBuXHDU"
 
@@ -14,17 +15,28 @@ http = urllib3.PoolManager(block=True, cert_reqs='CERT_REQUIRED', ca_certs=certi
 sub_classifications = ["hiphop", "jazz", "rock"]
 interested_in_event = ["yes", "yeah", "yap", "interested"]
 
+MATCHING_TOLERANCE = 50
+
 class MessageHandler(object):
 
     contexts = Contexts()
 
     @staticmethod
-    def determine_action(message_text, context):
-        if message_text in sub_classifications:
-            return reply_event_query 
-        if message_text in interested_in_event:
-            return reply_ticket_purchase 
-        return reply_dont_understand
+    def update_max_score(max_match, message, strings_list):
+        for string in strings_list:
+            score = fuzz.ratio(message, string)
+            if score > max_match["score"]:
+                max_match["score"] = score
+                max_match["class"] = reply_event_query    
+
+    @classmethod
+    def determine_action(cls, message_text, context):
+        max_match = {"score": 0, "class": reply_dont_understand}
+        cls.update_max_score(max_match, message_text, sub_classifications)
+        cls.update_max_score(max_match, message_text, sub_classifications)
+        if max_match["score"] < MATCHING_TOLERANCE:
+            return reply_dont_understand
+        return max_match["class"]
 
     @staticmethod
     def call_dashbot(direction, user_id, message_text):
