@@ -22,18 +22,18 @@ class MessageHandler(object):
     contexts = Contexts()
 
     @staticmethod
-    def update_max_score(max_match, message, strings_list):
+    def update_max_score(max_match, message, strings_list, cur_cls):
         for string in strings_list:
             score = fuzz.ratio(message, string)
             if score > max_match["score"]:
                 max_match["score"] = score
-                max_match["class"] = reply_event_query    
+                max_match["class"] = cur_cls
 
     @classmethod
     def determine_action(cls, message_text, context):
         max_match = {"score": 0, "class": reply_dont_understand}
-        cls.update_max_score(max_match, message_text, sub_classifications)
-        cls.update_max_score(max_match, message_text, sub_classifications)
+        cls.update_max_score(max_match, message_text, sub_classifications, reply_event_query)
+        cls.update_max_score(max_match, message_text, interested_in_event, reply_ticket_purchase)
         if max_match["score"] < MATCHING_TOLERANCE:
             return reply_dont_understand
         return max_match["class"]
