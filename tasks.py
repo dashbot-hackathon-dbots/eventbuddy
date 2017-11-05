@@ -14,8 +14,15 @@ class MessageHandler(object):
 
     contexts = Contexts()
 
+    sub_classifications = ["hiphop", "jazz", "rock"]
+    interested_in_event = ["yes", "yeah", "yap", "interested"]
+
     @staticmethod
     def determine_action(message_text, context):
+        if message_text in sub_classifications:
+            return reply_event_query 
+        if message_text in interested_in_event:
+            return reply_ticket_purchase 
         return reply_dont_understand
 
     @staticmethod
