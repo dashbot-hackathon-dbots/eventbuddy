@@ -1,6 +1,6 @@
 import json
 
-from actions import reply_dont_understand
+from actions import reply_dont_understand, reply_event_query
 from context import Contexts
 import urllib3
 import certifi
@@ -16,7 +16,7 @@ class MessageHandler(object):
 
     @staticmethod
     def determine_action(message_text, context):
-        return reply_dont_understand
+        return reply_event_query
 
     @staticmethod
     def call_dashbot(direction, user_id, message_text):
