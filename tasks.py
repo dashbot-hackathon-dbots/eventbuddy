@@ -1,6 +1,8 @@
 import json
 
 from actions import reply_dont_understand
+from actions import reply_event_query
+from actions import reply_ticket_purchase
 from context import Contexts
 import urllib3
 import certifi
@@ -9,13 +11,12 @@ DASHBOT_API_KEY = "CLyJ1E8NKNzFbFZ45PUwXmLAGkZCZiajlsBuXHDU"
 
 http = urllib3.PoolManager(block=True, cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
 
+sub_classifications = ["hiphop", "jazz", "rock"]
+interested_in_event = ["yes", "yeah", "yap", "interested"]
 
 class MessageHandler(object):
 
     contexts = Contexts()
-
-    sub_classifications = ["hiphop", "jazz", "rock"]
-    interested_in_event = ["yes", "yeah", "yap", "interested"]
 
     @staticmethod
     def determine_action(message_text, context):
