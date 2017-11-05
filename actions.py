@@ -47,9 +47,10 @@ def _build_event_message(event_dict, message, first=True):
         event_dict["prices"] + "\n" if event_dict.get("prices") else "",
         event_dict["venues"]), attachments=[{"contentType": "image/jpeg", "contentUrl": event_dict["image"]}])
 
+
 def reply_event_query(message, context):
     question = context.get("question")
-    message_text = message["text"]
+    message_text = message.get("text", "")
     dont_understand_reply = _make_dont_understand_reply(message)
     if not context.get("suggestiongiven"):
         if question == "when":
@@ -81,14 +82,16 @@ def reply_event_query(message, context):
     if start and end and state_code and classification_names:
         event = _get_event(context)
         if context.get("suggestiongiven"):
-            if message_text.lower() in ["yes", "great", "sounds good"]:
+            if message_text.lower() in ["yes", "great", "sounds good", "nice"]:
+                url = context["link"]
                 context = {}
                 context["proposepurchase"] = True
-                reply = ReplyToActivity(fill=message,
-                                        text="Great! Let's purchase the tickets then!")
-            elif message_text.lower() in ["no", "nah", "meh"]:
+                reply = ReplyToActivity(fill=message, textFormat="markdown",
+                                        text="Great! Let's [purchase]({}) the tickets then!".format(url))
+            elif message_text.lower() in ["no", "nah", "meh", "next"]:
                 if event:
                     reply = _build_event_message(event, message, first=False)
+                    context["link"] = event["link"]
                 else:
                     return {}, ReplyToActivity(fill=message, text="Sorry. I couldn't find anything to your taste!")
             else:
@@ -96,6 +99,7 @@ def reply_event_query(message, context):
         else:
             if event:
                 reply = _build_event_message(event, message, first=True)
+                context["link"] = event["link"]
             else:
                 return {}, ReplyToActivity(fill=message, text="Sorry. I couldn't find anything to your taste!")
             context["suggestiongiven"] = True
