@@ -7,6 +7,9 @@ def reply_dont_understand(message, context):
     return {"counter": counter+1}, reply
 
 
-# def reply_event_query(message, context):
-#     user_id = message["from"]["id"]
-#     context
+def reply_event_query(message, context):
+    print("a")
+
+
+def reply_ticket_purchase(message, context):
+    print("b")

@@ -24,7 +24,6 @@ class MessageHandler(object):
             direction, DASHBOT_API_KEY)
         data = json.dumps({"text": message_text, "userId": user_id})
         r = http.request("POST", url, body=data, headers={'Content-Type': 'application/json'})
-        print(r)
 
     @classmethod
     def handle_message(cls, message):
